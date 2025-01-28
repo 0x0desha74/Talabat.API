@@ -42,6 +42,7 @@ namespace Talabat.Repository
                         .FirstOrDefaultAsync() as T;
 
             }
+
             return await _dbContext.Set<T>().FindAsync(id);
         }
     }
