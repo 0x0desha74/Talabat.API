@@ -72,7 +72,5 @@ namespace Talabat.APIs
         }
     }
 
-    internal class GenericReposotory<T>
-    {
-    }
+ 
 }
