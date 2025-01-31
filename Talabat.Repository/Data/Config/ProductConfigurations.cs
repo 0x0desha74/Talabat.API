@@ -18,13 +18,13 @@ namespace Talabat.Repository.Data.Configurations
 
 
 
-            builder.HasOne(p => p.Brand)
+            builder.HasOne(p => p.ProductBrand)
                 .WithMany()
                 .HasForeignKey(b => b.ProductBrandId);
 
 
 
-            builder.HasOne(p => p.Type)
+            builder.HasOne(p => p.ProductType)
                 .WithMany()
                 .HasForeignKey(t => t.ProductTypeId);
         }

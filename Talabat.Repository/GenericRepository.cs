@@ -25,8 +25,8 @@ namespace Talabat.Repository
             if (typeof(T) == typeof(Product))
             {
                 return (IEnumerable<T>) await _dbContext.Products
-                        .Include(p => p.Type)
-                        .Include(p => p.Brand)
+                        .Include(p => p.ProductType)
+                        .Include(p => p.ProductBrand)
                         .ToListAsync();
             }
             return await _dbContext.Set<T>().ToListAsync();
@@ -41,8 +41,8 @@ namespace Talabat.Repository
             {
                 return   await _dbContext.Products
                         .Where(p => p.Id == id)
-                        .Include(P => P.Brand)
-                        .Include(P => P.Type)
+                        .Include(P => P.ProductBrand)
+                        .Include(P => P.ProductType)
                         .FirstOrDefaultAsync() as T;
 
             }
@@ -78,5 +78,7 @@ namespace Talabat.Repository
         {
             return SpecificationEvaluator<T>.GetQuery(_dbContext.Set<T>(), spec);
         }
+
+      
     }
 }
