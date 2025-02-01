@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Talabat.APIs.DTOs;
+using Talabat.APIs.Errors;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories;
 using Talabat.Core.Specifications;
@@ -32,13 +33,21 @@ namespace Talabat.APIs.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductToReturnDTO>> GetProduct(int id) 
+        public async Task<ActionResult<ProductToReturnDTO>> GetProduct(int id)
         {
             var spec = new ProductWithBrandAndTypeSpecifications(id);
             var product = await _productRepo.GetByIdWithSpecAsync(spec);
 
-            return Ok(_mapper.Map<Product,ProductToReturnDTO>(product));
+           
+            if (product is null) return NotFound(new ApiResponse(404));
+
+            return Ok(_mapper.Map<Product, ProductToReturnDTO>(product));
+
         }
 
+        private object? ApiResponse()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Talabat.APIs.Errors;
 using Talabat.APIs.Helpers;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories;
@@ -21,19 +23,38 @@ namespace Talabat.APIs
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             //allow services if swagger 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(); 
+            builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<StoreContext>(options =>
             {
                 options.UseSqlServer(ConnectionString);
             });
             //builder.Services.AddScoped<IGenericRepository<>,GenericRepository<>>();
-            builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>)); //allow dependency injection of genericRepo
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>)); //allow dependency injection of genericRepo
             //builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
             builder.Services.AddAutoMapper(typeof(MappingProfiles)); //easy syntax
+
+            //Validation Error Response Handling
+
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = (actionContext) =>
+                {
+                    var errors = actionContext.ModelState.Where(P => P.Value.Errors.Count() > 0)
+                                                                    .SelectMany(P => P.Value.Errors)
+                                                                    .Select(E => E.ErrorMessage)
+                                                                    .ToArray();
+                    var validationErrorResponse = new ApiValidationErrorResponse()
+                    {
+                        Errors = errors
+                    };
+                    return new BadRequestObjectResult(validationErrorResponse);
+                };
+            });
+
             #endregion
 
             var app = builder.Build();
-            
+
             var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
@@ -48,9 +69,9 @@ namespace Talabat.APIs
             {
 
                 var logger = loggerFactory.CreateLogger<Program>();
-                logger.LogError(ex, "An Error Occurred During Appling the Migration"); 
+                logger.LogError(ex, "An Error Occurred During Appling the Migration");
             }
-            
+
 
             #region Configure Kestrel MiddelWares
             // Configure the HTTP request pipeline.
@@ -72,5 +93,5 @@ namespace Talabat.APIs
         }
     }
 
- 
+
 }
