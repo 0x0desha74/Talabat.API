@@ -13,25 +13,30 @@ namespace Talabat.APIs.Controllers
     public class ProductsController : BaseApiController
     {
         private readonly IGenericRepository<Product> _productRepo;
+        private readonly IGenericRepository<ProductBrand> _brandRepo;
+        private readonly IGenericRepository<ProductType> _typeRepo;
         private readonly IMapper _mapper;
 
 
-        public ProductsController(IGenericRepository<Product> productRepository, IMapper mapper)
+        public ProductsController(IGenericRepository<Product> productRepository, IMapper mapper, IGenericRepository<ProductBrand> brandRepo, IGenericRepository<ProductType> typeRepo)
         {
             _productRepo = productRepository;
             _mapper = mapper;
+            _brandRepo = brandRepo;
+            _typeRepo = typeRepo;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductToReturnDTO>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductToReturnDTO>>> GetProducts()
         {
             var spec = new ProductWithBrandAndTypeSpecifications();
             var products = await _productRepo.GetAllWithSpecAsync(spec);
 
-            return Ok(_mapper.Map<IEnumerable<Product>, IEnumerable<ProductToReturnDTO>>(products));
+            return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDTO>>(products));
         }
 
-
+        [ProducesResponseType(typeof(ProductToReturnDTO),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse),StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductToReturnDTO>> GetProduct(int id)
         {
@@ -45,9 +50,23 @@ namespace Talabat.APIs.Controllers
 
         }
 
-        private object? ApiResponse()
+
+        [HttpGet("brands")] //GET : api/products/brands
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
         {
-            throw new NotImplementedException();
+            var brands = await _brandRepo.GetAllAsync();
+
+            return Ok(brands);
         }
+
+
+        [HttpGet("types")] //GET : api/products/brands
+        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetTypes()
+        {
+            var types = await _typeRepo.GetAllAsync();
+
+            return Ok(types);
+        }
+
     }
 }

@@ -20,22 +20,16 @@ namespace Talabat.Repository
             _dbContext = dbContext;
         } //ask clr to create object from dbContext implicitly
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IReadOnlyList<T>> GetAllAsync()
         {
-            if (typeof(T) == typeof(Product))
-            {
-                return (IEnumerable<T>) await _dbContext.Products
-                        .Include(p => p.ProductType)
-                        .Include(p => p.ProductBrand)
-                        .ToListAsync();
-            }
+            
             return await _dbContext.Set<T>().ToListAsync();
 
         }
 
 
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T?> GetByIdAsync(int? id)
         {
             if(typeof(T) == typeof(Product))
             {
@@ -51,7 +45,7 @@ namespace Talabat.Repository
         }
 
 
-        public async Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecifications<T> spec)
+        public async Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecifications<T> spec)
         {
             return await ApplySpecification(spec).ToListAsync();
         }
