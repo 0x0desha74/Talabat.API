@@ -27,23 +27,23 @@ namespace Talabat.APIs.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDTO>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductToReturnDTO>>> GetProducts(string? sort, int? brandId, int? typeId)
         {
-            var spec = new ProductWithBrandAndTypeSpecifications();
+            var spec = new ProductWithBrandAndTypeSpecifications(sort, brandId, typeId);
             var products = await _productRepo.GetAllWithSpecAsync(spec);
 
             return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDTO>>(products));
         }
 
-        [ProducesResponseType(typeof(ProductToReturnDTO),StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProductToReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductToReturnDTO>> GetProduct(int id)
         {
             var spec = new ProductWithBrandAndTypeSpecifications(id);
             var product = await _productRepo.GetByIdWithSpecAsync(spec);
 
-           
+
             if (product is null) return NotFound(new ApiResponse(404));
 
             return Ok(_mapper.Map<Product, ProductToReturnDTO>(product));

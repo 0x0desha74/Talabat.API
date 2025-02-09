@@ -12,5 +12,7 @@ namespace Talabat.Core.Specifications
     {
         public Expression<Func<T, bool>> Criteria { get; set; } //for [where]
         public List<Expression<Func<T, object>>> Includes { get; set; } //for [Include]
+        public Expression<Func<T,object>> OrderBy { get; set; }
+        public Expression<Func<T,object>> OrderByDescending { get; set; }
     }
 }

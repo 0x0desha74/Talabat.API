@@ -18,7 +18,7 @@ namespace Talabat.Repository
         public GenericRepository(StoreContext dbContext)
         {
             _dbContext = dbContext;
-        } //ask clr to create object from dbContext implicitly
+        } //ask CLR to create object from dbContext implicitly
 
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
@@ -55,14 +55,6 @@ namespace Talabat.Repository
         {
             return await ApplySpecification(spec).FirstOrDefaultAsync();
         }
-
-
-
-
-
-
-
-
 
 
 
