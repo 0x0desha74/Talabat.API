@@ -14,7 +14,7 @@ namespace Talabat.Repository
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly StoreContext _dbContext;
-
+        
         public GenericRepository(StoreContext dbContext)
         {
             _dbContext = dbContext;
@@ -22,7 +22,7 @@ namespace Talabat.Repository
 
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
-            
+          
             return await _dbContext.Set<T>().ToListAsync();
 
         }
@@ -57,6 +57,10 @@ namespace Talabat.Repository
         }
 
 
+        public async Task<int> GetCountWithSpecAsync(ISpecifications<T> spec)
+        {
+            return await ApplySpecification(spec).CountAsync();
+        }
 
 
 
@@ -65,6 +69,5 @@ namespace Talabat.Repository
             return SpecificationEvaluator<T>.GetQuery(_dbContext.Set<T>(), spec);
         }
 
-      
     }
 }
