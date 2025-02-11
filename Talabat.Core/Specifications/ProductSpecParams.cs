@@ -10,6 +10,16 @@
             get { return pageSize; }
             set { pageSize = value > maxPageSize ? value : value; } //max = 10 
         }
+
+        private string search;
+
+        public string Search
+        {
+            get { return search; }
+            set { search = value.ToLower(); }
+        }
+
+
         public int PageIndex { get; set; } = 1;
         public string? Sort { get; set; }
         public int? BrandId { get; set; }   

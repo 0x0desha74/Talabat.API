@@ -13,10 +13,11 @@ namespace Talabat.Core.Specifications
     public class ProductWithBrandAndTypeSpecifications : BaseSpecification<Product>
     {
         //This constructor is used for Get All Products
-        public ProductWithBrandAndTypeSpecifications(ProductSpecParams specParams)
+        public ProductWithBrandAndTypeSpecifications(ProductSpecParams ProductSpecParams)
             : base(P =>
-                        (!specParams.BrandId.HasValue || P.ProductBrandId == specParams.BrandId.Value)
-                        && (!specParams.TypeId.HasValue || P.ProductTypeId == specParams.TypeId.Value)
+                        (string.IsNullOrEmpty(ProductSpecParams.Search) || P.Name.ToLower().Contains(ProductSpecParams.Search))&&
+                        (!ProductSpecParams.BrandId.HasValue || P.ProductBrandId == ProductSpecParams.BrandId.Value)
+                        && (!ProductSpecParams.TypeId.HasValue || P.ProductTypeId == ProductSpecParams.TypeId.Value)
                  )
         {
             Includes.Add(P => P.ProductBrand);
@@ -24,9 +25,9 @@ namespace Talabat.Core.Specifications
 
             AddOrderBy(P => P.Name);
 
-            if (!string.IsNullOrEmpty(specParams.Sort))
+            if (!string.IsNullOrEmpty(ProductSpecParams.Sort))
             {
-                switch (specParams.Sort)
+                switch (ProductSpecParams.Sort)
                 {
                     case "priceAsc":
                         AddOrderBy(P => P.Price);
@@ -44,7 +45,7 @@ namespace Talabat.Core.Specifications
             //skip = (size-1)*index
             //take = size
 
-            ApplyPagination(specParams.PageIndex * (specParams.PageSize - 1), specParams.PageSize);
+            ApplyPagination(ProductSpecParams.PageSize * (ProductSpecParams.PageIndex - 1), ProductSpecParams.PageSize);
 
         }
 
