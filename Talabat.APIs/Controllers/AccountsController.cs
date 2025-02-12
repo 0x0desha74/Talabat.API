@@ -38,8 +38,31 @@ namespace Talabat.APIs.Controllers
         }
 
 
+        [HttpPost("register")] //POST : api/Accounts/register
+
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        {
+
+            var user = new AppUser()
+            {
+                DisplayName = registerDto.DisplayName,
+                Email = registerDto.Email,
+                PhoneNumber = registerDto.PhoneNumber,
+                UserName = registerDto.Email.Split("@")[0]
+            };
+
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            if (!result.Succeeded) return BadRequest(new ApiResponse(400));
+
+            return Ok(new UserDto()
+            {
+                DisplayName = registerDto.DisplayName,
+                Email = registerDto.Email,
+                Token = "This will be Token"
+            });
 
 
+        }
 
     }
 }
