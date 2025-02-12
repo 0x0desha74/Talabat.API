@@ -11,12 +11,12 @@
             set { pageSize = value > maxPageSize ? value : value; } //max = 10 
         }
 
-        private string search;
+        private string? search;
 
-        public string Search
+        public string? Search
         {
             get { return search; }
-            set { search = value.ToLower(); }
+            set { search = value?.ToLower(); }
         }
 
 

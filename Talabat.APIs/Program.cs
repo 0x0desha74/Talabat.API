@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Extensions;
 using Talabat.APIs.Helpers;
@@ -19,15 +20,26 @@ namespace Talabat.APIs
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
             #region Congifure Services
-            var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection String Not Found");
 
 
             builder.Services.AddControllers(); //allow dependency injection of API Services
-          
+
+            //Allow dbContext dependency injection
             builder.Services.AddDbContext<StoreContext>(options =>
             {
+            var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection String Not Found");
                 options.UseSqlServer(ConnectionString);
             });
+
+            //Allow redisDb dependency injection
+            builder.Services.AddSingleton<IConnectionMultiplexer>(S =>
+            {
+                var cs = builder.Configuration.GetConnectionString("Redis") ?? throw new InvalidOperationException("Connection String Not Found"); ;
+
+                return ConnectionMultiplexer.Connect(cs);
+            });
+
+
 
 
             builder.Services.AddSwaggerServices();
