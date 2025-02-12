@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -7,9 +8,11 @@ using Talabat.APIs.Extensions;
 using Talabat.APIs.Helpers;
 using Talabat.APIs.Middlewares;
 using Talabat.Core.Entities;
+using Talabat.Core.Entities.Identity;
 using Talabat.Core.Repositories;
 using Talabat.Repository;
 using Talabat.Repository.Data;
+using Talabat.Repository.Identity;
 
 namespace Talabat.APIs
 {
@@ -31,6 +34,15 @@ namespace Talabat.APIs
                 options.UseSqlServer(ConnectionString);
             });
 
+
+            //Allow dependency injection of AppIdentityDbContext 
+            builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+            {
+                var Connection = builder.Configuration.GetConnectionString("IdentityConnection") ?? throw new InvalidOperationException("Connection String Not Found");
+                options.UseSqlServer(Connection);
+            });
+
+
             //Allow redisDb dependency injection
             builder.Services.AddSingleton<IConnectionMultiplexer>(S =>
             {
@@ -41,13 +53,16 @@ namespace Talabat.APIs
 
 
 
-
+            //Application Services
             builder.Services.AddSwaggerServices();
             builder.Services.AddApplicationServices();
+            builder.Services.AddIdentityServices();
+
             #endregion
-
+             
             var app = builder.Build();
-
+         
+            //Update Database & Data Seeding
             var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
@@ -55,8 +70,15 @@ namespace Talabat.APIs
             {
                 var dbContext = services.GetRequiredService<StoreContext>(); //Ask Explicitly
                 await dbContext.Database.MigrateAsync(); //Apply Migration
-
                 await StoreContextSeed.SeedAsync(dbContext); //Seeding Data 
+
+                var IdentityDbContext = services.GetRequiredService<AppIdentityDbContext>(); //Ask Explicitly for an object of AppIdentityDbContext
+                await IdentityDbContext.Database.MigrateAsync(); //Apply Migration
+
+                //Seed Data of the first user
+                var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                await AppIdentityDbContextSeed.SeedUserAsync(userManager);
+
             }
             catch (Exception ex)
             {
@@ -64,7 +86,7 @@ namespace Talabat.APIs
                 var logger = loggerFactory.CreateLogger<Program>();
                 logger.LogError(ex, "An Error Occurred During Appling the Migration");
             }
-
+            
 
             #region Configure Kestrel MiddelWares 
 
