@@ -2,6 +2,7 @@
 using Talabat.APIs.Errors;
 using Talabat.APIs.Helpers;
 using Talabat.Core.Repositories;
+using Talabat.Core.Services;
 using Talabat.Repository;
 
 namespace Talabat.APIs.Extensions
@@ -17,7 +18,9 @@ namespace Talabat.APIs.Extensions
 
             //Validation Error Response Handling
             services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
-            
+
+
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.InvalidModelStateResponseFactory = (actionContext) =>
