@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Talabat.APIs.DTOs;
 using Talabat.APIs.Errors;
+using Talabat.APIs.Extensions;
 using Talabat.Core.Entities.Identity;
 using Talabat.Core.Services;
 
@@ -16,13 +18,15 @@ namespace Talabat.APIs.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
 
 
-        public AccountsController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService)
+        public AccountsController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _mapper = mapper;
         }
 
 
@@ -68,7 +72,7 @@ namespace Talabat.APIs.Controllers
 
 
         }
-          
+
 
 
         [Authorize]
@@ -81,9 +85,30 @@ namespace Talabat.APIs.Controllers
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
-               Token = await _tokenService.CreateTokenAsync(user, _userManager) //create new token , till we know how to store user Tokens in Database
+                Token = await _tokenService.CreateTokenAsync(user, _userManager) //create new token , till we know how to store user Tokens in Database
             });
         }
+
+
+
+        [Authorize]
+        [HttpGet("address")]
+        public async Task<ActionResult<AddressDto>> GetUserAddressAsync()
+        {
+
+            var user = await _userManager.FindUserWithAddressAsync(User);
+
+            var mappedAddress = _mapper.Map<Address, AddressDto>(user.Address);
+            return Ok(mappedAddress);
+        }
+
+
+
+
+
+
+
+
 
 
 

@@ -12,7 +12,7 @@ using Talabat.Repository.Identity;
 namespace Talabat.Repository.Identity.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20250212175700_IdentityInitialCreate")]
+    [Migration("20250217213827_IdentityInitialCreate")]
     partial class IdentityInitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

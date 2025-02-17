@@ -16,6 +16,11 @@ namespace Talabat.Repository.Identity
 
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
 
+            builder.Entity<AppUser>().HasOne(U => U.Address).WithOne(A=> A.User).HasForeignKey<Address>(A=>A.AppUserId);
+        }
     }
 }
