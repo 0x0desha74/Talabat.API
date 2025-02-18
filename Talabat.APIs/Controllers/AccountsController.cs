@@ -32,11 +32,11 @@ namespace Talabat.APIs.Controllers
 
 
         [HttpPost("login")] //POST : api/Accounts/login
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login(LoginDto model)
         {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user is null) return Unauthorized(new ApiResponse(401));
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
             if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
             return Ok(new UserDto()
             {
@@ -49,28 +49,35 @@ namespace Talabat.APIs.Controllers
 
         [HttpPost("register")] //POST : api/Accounts/register
 
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register(RegisterDto model)
         {
+
+            if (CheckEmailExists(model.Email).Result.Value) //sync
+                return BadRequest(new ApiResponse(400,"Email already exists"));
+
 
             var user = new AppUser()
             {
-                DisplayName = registerDto.DisplayName,
-                Email = registerDto.Email,
-                PhoneNumber = registerDto.PhoneNumber,
-                UserName = registerDto.Email.Split("@")[0]
+                DisplayName = model.DisplayName,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                UserName = model.Email.Split("@")[0]
             };
 
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
+
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
 
             return Ok(new UserDto()
             {
-                DisplayName = registerDto.DisplayName,
-                Email = registerDto.Email,
+                DisplayName = model.DisplayName,
+                Email = model.Email,
                 Token = await _tokenService.CreateTokenAsync(user, _userManager)
             });
 
+            
 
+            
         }
 
 
@@ -92,7 +99,7 @@ namespace Talabat.APIs.Controllers
 
 
         [Authorize]
-        [HttpGet("address")]
+        [HttpGet("address")] //GET : api/accounts/address
         public async Task<ActionResult<AddressDto>> GetUserAddressAsync()
         {
 
@@ -118,14 +125,14 @@ namespace Talabat.APIs.Controllers
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
             return Ok(_mapper.Map<Address, AddressDto>(user.Address));
 
-
-
         }
 
 
-
-
-
+        [HttpGet("emailexists")] //GET : api/accounts/emailexists?email=mustafa.elsayed@gmail.com
+        public async Task<ActionResult<bool>> CheckEmailExists(string email)
+        {
+            return await _userManager.FindByEmailAsync(email) is not null;
+        }
 
 
     }
