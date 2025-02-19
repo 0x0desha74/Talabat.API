@@ -14,7 +14,7 @@ namespace Talabat.Repository
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly StoreContext _dbContext;
-        
+
         public GenericRepository(StoreContext dbContext)
         {
             _dbContext = dbContext;
@@ -22,7 +22,7 @@ namespace Talabat.Repository
 
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
-          
+
             return await _dbContext.Set<T>().ToListAsync();
 
         }
@@ -31,9 +31,9 @@ namespace Talabat.Repository
 
         public async Task<T?> GetByIdAsync(int? id)
         {
-            if(typeof(T) == typeof(Product))
+            if (typeof(T) == typeof(Product))
             {
-                return   await _dbContext.Products
+                return await _dbContext.Products
                         .Where(p => p.Id == id)
                         .Include(P => P.ProductBrand)
                         .Include(P => P.ProductType)
@@ -68,6 +68,18 @@ namespace Talabat.Repository
         {
             return SpecificationEvaluator<T>.GetQuery(_dbContext.Set<T>(), spec);
         }
+
+        public async Task AddAsync(T entity)
+            => await _dbContext.Set<T>().AddAsync(entity);
+
+
+        public void Update(T entity)
+
+            => _dbContext.Set<T>().Update(entity);
+
+
+        public void Delete(T entity)
+            => _dbContext.Set<T>().Remove(entity);
 
     }
 }
