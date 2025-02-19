@@ -12,19 +12,19 @@ namespace Talabat.Core.Entities.Order_Aggregate
         {
 
         }
-        public Address(string firstName, string lastName, string street, string city, string counrty)
+        public Address(string firstName, string lastName, string street, string city, string country)
         {
             FirstName = firstName;
             this.lastName = lastName;
             Street = street;
             City = city;
-            Counrty = counrty;
+            Country = country;
         }
 
         public string FirstName { get; set; }
         public string lastName { get; set; }
         public string Street { get; set; }
         public string City { get; set; }
-        public string Counrty { get; set; }
+        public string Country { get; set; }
     }
 }

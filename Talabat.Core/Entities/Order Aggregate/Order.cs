@@ -8,14 +8,26 @@ namespace Talabat.Core.Entities.Order_Aggregate
 {
     public class Order : BaseEntity
     {
+        public Order()
+        {
+
+        }
+        public Order(string buyerEmail, Address shippingAddress, DeliveryMethod deliveryMethod, ICollection<OrderItem> item, decimal subTotal)
+        {
+            BuyerEmail = buyerEmail;
+            ShippingAddress = shippingAddress;
+            DeliveryMethod = deliveryMethod;
+            Item = item;
+            SubTotal = subTotal;
+        }
+
         public string BuyerEmail { get; set; }
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
-        public int MyProperty { get; set; }
         public Address ShippingAddress { get; set; }
         public DeliveryMethod DeliveryMethod { get; set; } //NP [one]
         public ICollection<OrderItem> Item { get; set; } = new HashSet<OrderItem>(); //NP [Many]
-        public decimal SubTotal { get; set; } //  = ProductPrice * Qantity
+        public decimal SubTotal { get; set; } //  = ProductPrice * Quantity
         public decimal GetTotal()
             => SubTotal + DeliveryMethod.Cost;
         public string PaymentIntentId { get; set; }
