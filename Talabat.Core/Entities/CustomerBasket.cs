@@ -15,6 +15,7 @@ namespace Talabat.Core.Entities
         {
             Id = id;
         }
+
     }
 }
  
