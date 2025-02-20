@@ -84,5 +84,10 @@ namespace Talabat.Service
 
         }
 
+        public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
+              => await _unitOfWork.Repository<DeliveryMethod>().GetAllAsync();
+            
+        
+
     }
 }

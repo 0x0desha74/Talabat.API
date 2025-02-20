@@ -5,17 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Talabat.APIs.DTOs;
 using Talabat.APIs.Errors;
+using Talabat.Core.Entities;
 using Talabat.Core.Entities.Order_Aggregate;
 using Talabat.Core.Services;
 
 namespace Talabat.APIs.Controllers
 {
-    
+
+    [Authorize]
     public class OrdersController : BaseApiController
     {
 
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
+
 
         public OrdersController(IOrderService orderService, IMapper mapper)
         {
@@ -48,7 +51,6 @@ namespace Talabat.APIs.Controllers
             return Ok(orders);
         }
 
-        [Authorize]
         [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [HttpGet("{id}")] // GET : /api/orders/2
@@ -60,6 +62,14 @@ namespace Talabat.APIs.Controllers
             return Ok(order);
         }
 
+
+
+        [HttpGet("deliveryMethods")]
+        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+        {
+            var deliveryMethods = await _orderService.GetDeliveryMethodsAsync();
+            return Ok(deliveryMethods);
+        }
 
     }
 }
