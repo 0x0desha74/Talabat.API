@@ -29,7 +29,7 @@ namespace Talabat.Repository
 
 
 
-        public async Task<T?> GetByIdAsync(int? id)
+        public async Task<T> GetByIdAsync(int id)
         {
             if (typeof(T) == typeof(Product))
             {
@@ -74,7 +74,6 @@ namespace Talabat.Repository
 
 
         public void Update(T entity)
-
             => _dbContext.Set<T>().Update(entity);
 
 
