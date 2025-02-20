@@ -24,7 +24,7 @@ namespace Talabat.APIs.Controllers
         }
 
         [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [Authorize]
         [HttpPost] // POST : /api/orders
         public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
@@ -38,6 +38,15 @@ namespace Talabat.APIs.Controllers
 
         }
 
+
+        [Authorize]
+        [HttpGet] // GET /api/orders
+        public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser()
+        {
+            var buyerEmail = User.FindFirstValue(ClaimTypes.Email);
+            var orders = await _orderService.GetOrdersForUserAsync(buyerEmail);
+            return Ok(orders);
+        }
 
     }
 }

@@ -17,7 +17,7 @@ namespace Talabat.Core.Entities.Order_Aggregate
             BuyerEmail = buyerEmail;
             ShippingAddress = shippingAddress;
             DeliveryMethod = deliveryMethod;
-            Item = item;
+            Items = item;
             SubTotal = subTotal;
         }
 
@@ -26,7 +26,7 @@ namespace Talabat.Core.Entities.Order_Aggregate
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public Address ShippingAddress { get; set; }
         public DeliveryMethod DeliveryMethod { get; set; } //NP [one]
-        public ICollection<OrderItem> Item { get; set; } = new HashSet<OrderItem>(); //NP [Many]
+        public ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>(); //NP [Many]
         public decimal SubTotal { get; set; } //  = ProductPrice * Quantity
         public decimal GetTotal()
             => SubTotal + DeliveryMethod.Cost;

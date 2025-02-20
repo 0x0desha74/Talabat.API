@@ -64,11 +64,6 @@ namespace Talabat.Repository
 
 
 
-        private IQueryable<T> ApplySpecification(ISpecifications<T> spec)
-        {
-            return SpecificationEvaluator<T>.GetQuery(_dbContext.Set<T>(), spec);
-        }
-
         public async Task AddAsync(T entity)
             => await _dbContext.Set<T>().AddAsync(entity);
 
@@ -79,6 +74,11 @@ namespace Talabat.Repository
 
         public void Delete(T entity)
             => _dbContext.Set<T>().Remove(entity);
+
+        private IQueryable<T> ApplySpecification(ISpecifications<T> spec)
+        {
+            return SpecificationEvaluator<T>.GetQuery(_dbContext.Set<T>(), spec);
+        }
 
     }
 }
