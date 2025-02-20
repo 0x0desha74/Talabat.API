@@ -67,19 +67,22 @@ namespace Talabat.Service
             return result > 0 ? order : null;
         }
 
-        public Task<Order> GetOrderByIdForUserAsync(string buyerEmail, int orderId)
-        {
-            throw new NotImplementedException();
-        }
+      
 
-        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+        public async Task<IReadOnlyList<Order>?> GetOrdersForUserAsync(string buyerEmail)
         {
             var spec = new OrderSpecifications(buyerEmail);
             var orders = await _unitOfWork.Repository<Order>().GetAllWithSpecAsync(spec);
             return orders;
         }
 
-       
+        public async Task<Order?> GetOrderByIdForUserAsync(string buyerEmail, int orderId)
+        {
+            var spec = new OrderSpecifications(buyerEmail, orderId);
+            var order = await _unitOfWork.Repository<Order>().GetByIdWithSpecAsync(spec);
+            return order is null? null : order;
+
+        }
 
     }
 }

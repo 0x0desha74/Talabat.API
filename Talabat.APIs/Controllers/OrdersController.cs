@@ -10,7 +10,7 @@ using Talabat.Core.Services;
 
 namespace Talabat.APIs.Controllers
 {
-
+    
     public class OrdersController : BaseApiController
     {
 
@@ -23,9 +23,9 @@ namespace Talabat.APIs.Controllers
             _mapper = mapper;
         }
 
+
         [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        [Authorize]
         [HttpPost] // POST : /api/orders
         public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
         {
@@ -39,7 +39,7 @@ namespace Talabat.APIs.Controllers
         }
 
 
-        [Authorize]
+
         [HttpGet] // GET /api/orders
         public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser()
         {
@@ -47,6 +47,19 @@ namespace Talabat.APIs.Controllers
             var orders = await _orderService.GetOrdersForUserAsync(buyerEmail);
             return Ok(orders);
         }
+
+        [Authorize]
+        [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [HttpGet("{id}")] // GET : /api/orders/2
+        public async Task<ActionResult<Order>> GetOrderForUser(int id)
+        {
+            var buyerEmail = User.FindFirstValue(ClaimTypes.Email);
+            var order = await _orderService.GetOrderByIdForUserAsync(buyerEmail, id);
+            if (order is null) return NotFound(new ApiResponse(404));
+            return Ok(order);
+        }
+
 
     }
 }
