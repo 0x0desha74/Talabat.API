@@ -5,6 +5,7 @@ using Talabat.Core;
 using Talabat.Core.Repositories;
 using Talabat.Core.Services;
 using Talabat.Repository;
+using Talabat.Service;
 
 namespace Talabat.APIs.Extensions
 {
@@ -21,6 +22,7 @@ namespace Talabat.APIs.Extensions
 
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
+            services.AddScoped(typeof(IOrderService), typeof(OrderService));
 
             //Validation Error Response Handling
             services.Configure<ApiBehaviorOptions>(options =>
