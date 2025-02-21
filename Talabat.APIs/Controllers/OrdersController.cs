@@ -61,7 +61,7 @@ namespace Talabat.APIs.Controllers
             var buyerEmail = User.FindFirstValue(ClaimTypes.Email);
             var order = await _orderService.GetOrderByIdForUserAsync(buyerEmail, id);
             if (order is null) return NotFound(new ApiResponse(404));
-            return Ok(_mapper.Map<Order, OrderItemDto>(order));
+            return Ok(_mapper.Map<Order, OrderToReturnDto>(order));
         }
 
 
