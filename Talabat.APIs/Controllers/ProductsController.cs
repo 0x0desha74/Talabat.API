@@ -21,7 +21,7 @@ namespace Talabat.APIs.Controllers
         private readonly IMapper _mapper;
 
 
-        public ProductsController(IGenericRepository<Product> productRepository, IMapper mapper, IGenericRepository<ProductBrand> brandRepo, IGenericRepository<ProductType> typeRepo, IUnitOfWork unitOfWork)
+        public ProductsController( IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
