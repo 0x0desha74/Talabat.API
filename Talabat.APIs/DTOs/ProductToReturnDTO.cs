@@ -12,5 +12,6 @@ namespace Talabat.APIs.DTOs
         public string ProductBrand { get; set; }
         public int ProductTypeId { get; set; } //Foreign Key
         public string ProductType { get; set; }
+        public string PaymentIntentId { get; set; }
     }
 }

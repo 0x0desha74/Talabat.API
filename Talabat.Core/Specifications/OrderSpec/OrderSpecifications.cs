@@ -9,19 +9,20 @@ namespace Talabat.Core.Specifications.OrderSpec
 {
     public class OrderSpecifications : BaseSpecification<Order>
     {
-        public OrderSpecifications(string email):base(order=>order.BuyerEmail == email)
+        public OrderSpecifications(string email) : base(order => order.BuyerEmail == email)
         {
             Includes.Add(O => O.Items);
             Includes.Add(O => O.DeliveryMethod);
-            AddOrderByDesc(order => order.OrderDate); 
+            AddOrderByDesc(order => order.OrderDate);
         }
 
 
-        public OrderSpecifications(string email, int id):base(order =>order.BuyerEmail == email && order.Id == id)
+        public OrderSpecifications(string email, int id) : base(order => order.BuyerEmail == email && order.Id == id)
         {
             Includes.Add(O => O.Items);
             Includes.Add(O => O.DeliveryMethod);
         }
 
+      
     }
 }
