@@ -20,7 +20,8 @@ namespace Talabat.APIs.Helpers
             CreateMap<BasketItemDto, BasketItem>();
             CreateMap<AddressDto, Core.Entities.Order_Aggregate.Address>().ReverseMap();
 
-
+            CreateMap<CustomerBasketDto, CustomerBasket>().ReverseMap();
+            CreateMap<BasketItemDto, BasketItem>().ReverseMap();
             //Order-To-OrderToReturn 
 
             CreateMap<Order, OrderToReturnDto>()

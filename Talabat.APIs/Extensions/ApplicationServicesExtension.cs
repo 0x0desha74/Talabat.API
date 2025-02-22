@@ -23,6 +23,9 @@ namespace Talabat.APIs.Extensions
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
             services.AddScoped(typeof(IOrderService), typeof(OrderService));
+            
+            services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
+
 
             //Validation Error Response Handling
             services.Configure<ApiBehaviorOptions>(options =>
