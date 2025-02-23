@@ -51,8 +51,15 @@ namespace Talabat.APIs
                 return ConnectionMultiplexer.Connect(cs);
             });
 
+            //Allow Dependency injection of CORS [Cros Origin Service]
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("MyPolicy", options =>
+                {
+                    options.AllowAnyHeader().AllowAnyMethod().WithOrigins(builder.Configuration["FrontBaseUrl"]);
+                });
 
-
+            });
             //Application Services
             builder.Services.AddSwaggerServices();
             builder.Services.AddApplicationServices();
@@ -100,7 +107,8 @@ namespace Talabat.APIs
 
 
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
-
+            //Add cross origin requests [Cross Origin Policy]
+            app.UseCors("MyPolicy"); 
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
