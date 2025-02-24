@@ -29,7 +29,7 @@ namespace Talabat.Service
         public async Task<CustomerBasket> CreateOrUpdatePaymentIntentAsync(string basketId)
         {
 
-            StripeConfiguration.ApiKey = _configuration["StripeSettings:SecretKet"];
+            StripeConfiguration.ApiKey = _configuration["StripeSettings:SecretKey"];
 
             var basket = await _basketRepository.GetBasketAsync(basketId);
             if (basket is null) return null;
@@ -44,7 +44,7 @@ namespace Talabat.Service
 
             }
 
-            if (basket?.Items?.Count > 0)
+            if (basket?.Items?.Count() > 0)
             {
                 foreach (var item in basket.Items)
                 {
@@ -68,7 +68,7 @@ namespace Talabat.Service
                 };
                 paymentIntent = await service.CreateAsync(options);
                 basket.PaymentIntentId = paymentIntent.Id;
-                basket.ClientSecret = paymentIntent.ClientSecret;
+                basket.ClientSecret =    paymentIntent.ClientSecret;
             }
             else //Update Payment Intent
             {
@@ -76,8 +76,9 @@ namespace Talabat.Service
                 {
                     Amount = (long)basket.Items.Sum(item => item.Price * item.Quantity * 100) + (long)shippingPrice *100
                 };
-               paymentIntent= await service.UpdateAsync(basket.PaymentIntentId, options);
-               
+                paymentIntent = await service.UpdateAsync(basket.PaymentIntentId, options);
+
+           
             }
 
             await _basketRepository.UpdateBasketAsync(basket); //update basket 

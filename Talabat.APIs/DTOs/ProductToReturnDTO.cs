@@ -4,6 +4,7 @@ namespace Talabat.APIs.DTOs
 {
     public class ProductToReturnDTO
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string PictureUrl { get; set; }
@@ -12,6 +13,7 @@ namespace Talabat.APIs.DTOs
         public string ProductBrand { get; set; }
         public int ProductTypeId { get; set; } //Foreign Key
         public string ProductType { get; set; }
-        public string PaymentIntentId { get; set; }
+
+       
     }
 }

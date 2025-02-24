@@ -27,14 +27,14 @@ namespace Talabat.APIs.Controllers
         }
 
         [HttpPost] //POST : api/baskets
-        public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasketDto basket)
+        public async Task<ActionResult<CustomerBasketDto>> UpdateBasket(CustomerBasketDto basket)
         {
             var mappedBasket = _mapper.Map<CustomerBasketDto, CustomerBasket>(basket);
             var CreatedOrUpdatedBasket = await _basketRepository.UpdateBasketAsync(mappedBasket);
          
             
             if (CreatedOrUpdatedBasket is null) return BadRequest(new ApiResponse(400));
-            return CreatedOrUpdatedBasket;
+            return basket;
         }
 
         [HttpDelete] //DELETE : api/baskets?id=

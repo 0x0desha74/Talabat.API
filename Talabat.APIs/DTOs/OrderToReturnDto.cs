@@ -15,6 +15,6 @@ namespace Talabat.APIs.DTOs
         public ICollection<OrderItemDto> Items { get; set; }
         public decimal SubTotal { get; set; }
         public decimal Total { get; set; }
-        public string PaymentIntentId { get; set; } 
+        public string PaymentIntentId { get; set; }
     }
 }
